@@ -1,0 +1,4 @@
+snapshot,test_points,overall_accuracy,kappa,producers_wetland/water,users_wetland/water,producers_cropland,users_cropland,producers_grassland/other,users_grassland/other
+2000,269,0.955,0.933,0.903,0.977,0.975,0.975,0.99,0.923
+2010,286,0.986,0.979,0.979,0.989,0.989,0.989,0.99,0.98
+2020,269,0.933,0.899,0.885,0.958,0.929,1.0,0.978,0.857
