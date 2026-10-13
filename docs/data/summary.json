@@ -1,5 +1,5 @@
 {
-  "title": "Wetland Loss to Agriculture in a Prairie Pothole Watershed, 2000–2020",
+  "title": "Wetland Loss to Agriculture in a Prairie Pothole Watershed, 2000-2020",
   "watershed": {
     "name": "Pipestem",
     "huc8": "10160002",
@@ -33,7 +33,7 @@
       "color": "#1baf7a"
     }
   ],
-  "conversion_color": "#e34948",
+  "conversion_color": "#b51f8a",
   "area_km2": {
     "2000": {
       "wetland/water": 500.2,
