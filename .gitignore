@@ -1,0 +1,7 @@
+.venv/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+# Large raw downloads (NWI geodatabase etc.) - re-downloadable, keep out of git
+data/raw/
+data/processed/nwi_pipestem/
