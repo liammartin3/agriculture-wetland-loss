@@ -1,0 +1,65 @@
+{
+  "title": "Wetland Loss to Agriculture in a Prairie Pothole Watershed, 2000–2020",
+  "watershed": {
+    "name": "Pipestem",
+    "huc8": "10160002",
+    "state": "ND",
+    "area_km2": 2772.5
+  },
+  "bounds": [
+    [
+      46.861338447223076,
+      -99.74013760717888
+    ],
+    [
+      47.53018490827312,
+      -98.71586639403792
+    ]
+  ],
+  "classes": [
+    {
+      "value": 0,
+      "name": "wetland/water",
+      "color": "#2a78d6"
+    },
+    {
+      "value": 1,
+      "name": "cropland",
+      "color": "#eb6834"
+    },
+    {
+      "value": 2,
+      "name": "grassland/other",
+      "color": "#1baf7a"
+    }
+  ],
+  "conversion_color": "#e34948",
+  "area_km2": {
+    "2000": {
+      "wetland/water": 500.2,
+      "cropland": 1260.6,
+      "grassland/other": 1011.8
+    },
+    "2010": {
+      "wetland/water": 542.2,
+      "cropland": 1307.0,
+      "grassland/other": 923.3
+    },
+    "2020": {
+      "wetland/water": 559.5,
+      "cropland": 1414.7,
+      "grassland/other": 798.3
+    }
+  },
+  "conversion": {
+    "wetland_2000_km2": 500.2,
+    "converted_km2": 19.4,
+    "converted_pct_of_2000_wetland": 3.9,
+    "reverse_km2": 26.2
+  },
+  "overall_accuracy": {
+    "2000": 0.955,
+    "2010": 0.986,
+    "2020": 0.933
+  }
+}
