@@ -109,10 +109,9 @@
 </head>
 <body>
   <header>
-    <h1 id="title">Wetland Loss to Agriculture in a Prairie Pothole Watershed, 2000–2020</h1>
+    <h1 id="title">Wetland Loss to Agriculture in a Prairie Pothole Watershed, 2000-2020</h1>
     <p>Land cover in the Pipestem watershed (HUC8 10160002), North Dakota, mapped from spring Landsat imagery with
-      a random forest classifier. Drag the handle to compare <strong>2000</strong> (left) and
-      <strong>2020</strong> (right).</p>
+      a random forest classifier. Drag the handle to compare 2000 (left) with 2020 (right).</p>
   </header>
 
   <main>
@@ -124,14 +123,14 @@
 
       <h2>Layers</h2>
       <div class="controls">
-        <label><input type="checkbox" id="show-conversion" checked> Show converted wetland</label>
+        <label><input type="checkbox" id="show-conversion"> Show wetland converted to cropland</label>
         <label for="opacity">Land cover opacity</label>
         <input type="range" id="opacity" min="0" max="100" value="85" aria-label="Land cover opacity">
       </div>
 
       <h2>Wetland converted to cropland</h2>
-      <p class="hint">Wetland in 2000, cropland in both 2010 and 2020</p>
-      <div class="big" id="converted">–</div>
+      <p class="hint">Land that was wetland in 2000 and was still farmed in 2010 and 2020</p>
+      <div class="big" id="converted"></div>
       <div class="muted" id="converted-detail"></div>
 
       <h2>Mapped area by class (km²)</h2>
@@ -143,14 +142,14 @@
   </main>
 
   <footer>
-    <p><strong>Method.</strong> Spring (April–June) median composites of Landsat Collection 2 surface reflectance
-      over 3-year windows (1999–2001, 2009–2011, 2019–2021). One random forest per snapshot, trained on labels from
-      the USDA Cropland Data Layer and the USFWS National Wetlands Inventory. Accuracy is from held-out
-      reference points and is likely optimistic.</p>
-    <p><strong>Caveats.</strong> 30 m pixels miss many small potholes; "wetland" in a snapshot includes ground that
-      was temporarily flooded that spring; areas are mapped, not error-adjusted. Converted pixels are hard to see
-      when zoomed out — zoom in.</p>
-    <p><span id="repo-link">Full write-up and code: see the README in this project's repository.</span>
+    <p>Each map is a median of April to June Landsat surface reflectance over three years (1999-2001, 2009-2011
+      and 2019-2021), classified with a random forest trained on labels from the USDA Cropland Data Layer and the
+      USFWS National Wetlands Inventory. There is a separate model for each year. Accuracy comes from held-out
+      reference points and is probably on the high side.</p>
+    <p>At 30 m, many small potholes are missed. Wetland here means ground that was wet in spring, which can include
+      temporary flooding. Areas are mapped areas, not error-adjusted. The converted pixels are small, so zoom in to
+      see them.</p>
+    <p><span id="repo-link">The write-up and code are in this project's GitHub repository.</span>
       Imagery: Esri World Imagery. Data: USGS Landsat, USDA NASS CDL, USFWS NWI, USGS WBD.</p>
   </footer>
 
@@ -165,7 +164,7 @@
         const repo = location.pathname.split("/").filter(Boolean)[0];
         if (repo) {
           document.getElementById("repo-link").innerHTML =
-            `Full write-up and code: <a href="https://github.com/${user}/${repo}">github.com/${user}/${repo}</a>.`;
+            `The write-up and code are at <a href="https://github.com/${user}/${repo}">github.com/${user}/${repo}</a>.`;
         }
       }
 
@@ -182,12 +181,9 @@
 
       // ---- Map, basemaps, panes ----
       const map = L.map("map", { zoomSnap: 0.25, minZoom: 8, maxZoom: 17, maxBounds: bounds.pad(0.6) });
-      const imagery = L.tileLayer(
+      L.tileLayer(
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         { maxZoom: 19, attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics" }).addTo(map);
-      const light = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-        { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors &copy; CARTO" });
-      L.control.layers({ "Satellite imagery": imagery, "Light map": light }, null, { position: "topleft" }).addTo(map);
       L.control.scale({ imperial: false }).addTo(map);
 
       for (const [name, z] of [["before", 410], ["after", 410], ["conversion", 420], ["outline", 430]]) {
@@ -202,8 +198,9 @@
         { pane: "before", opacity: opacity(), className: "pixelated", alt: "Land cover 2000" }).addTo(map);
       const after = L.imageOverlay("data/landcover_2020.png", bounds,
         { pane: "after", opacity: opacity(), className: "pixelated", alt: "Land cover 2020" }).addTo(map);
+      // Off by default; the checkbox in the panel turns it on
       const conversion = L.imageOverlay("data/conversion.png", bounds,
-        { pane: "conversion", className: "pixelated", alt: "Wetland converted to cropland" }).addTo(map);
+        { pane: "conversion", className: "pixelated", alt: "Wetland converted to cropland" });
 
       fetch("data/watershed.geojson").then(r => r.json()).then(geo => {
         L.geoJSON(geo, { pane: "outline", interactive: false,
@@ -294,13 +291,13 @@
           `<li><span class="swatch" style="background:${c.color}"></span>${c.name}</li>`);
       }
       legend.insertAdjacentHTML("beforeend",
-        `<li><span class="swatch" style="background:${summary.conversion_color}"></span>converted: wetland 2000 → cropland 2010 &amp; 2020</li>`);
+        `<li><span class="swatch" style="background:${summary.conversion_color}"></span>wetland converted to cropland</li>`);
 
       const conv = summary.conversion;
       document.getElementById("converted").textContent = `${fmt(conv.converted_km2)} km²`;
       document.getElementById("converted-detail").textContent =
-        `${fmt(conv.converted_pct_of_2000_wetland)}% of the ${fmt(conv.wetland_2000_km2)} km² mapped as wetland in 2000. ` +
-        `In the other direction, ${fmt(conv.reverse_km2)} km² went from cropland (2000) to wetland (2010 and 2020).`;
+        `${fmt(conv.converted_pct_of_2000_wetland)}% of the ${fmt(conv.wetland_2000_km2, 0)} km² of wetland in 2000. ` +
+        `Over the same years, ${fmt(conv.reverse_km2)} km² of cropland became wetland.`;
 
       const years = Object.keys(summary.area_km2);
       let rows = `<tr><th>Class</th>${years.map(y => `<th>${y}</th>`).join("")}</tr>`;
